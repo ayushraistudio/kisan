@@ -109,6 +109,30 @@ export default function Sidebar() {
         overflow: "hidden",
       }}
     >
+      {/* Injecting Global Styles for Scrollbar Hide and Hover Animations */}
+      <style>{`
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .sidebar-nav-container::-webkit-scrollbar {
+          display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .sidebar-nav-container {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+        }
+        
+        /* Smooth Hover Animation for Menu Items */
+        .sidebar-menu-item {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .sidebar-menu-item:hover {
+          transform: translateX(6px);
+          background: rgba(99, 102, 241, 0.15) !important;
+        }
+        .sidebar-menu-item.active-item:hover {
+          background: linear-gradient(135deg, rgba(79,70,229,0.40), rgba(124,58,237,0.30)) !important;
+        }
+      `}</style>
 
       {/* =====================================================
           BRAND
@@ -215,6 +239,7 @@ export default function Sidebar() {
       ===================================================== */}
 
       <nav
+        className="sidebar-nav-container"
         style={{
           flex: 1,
           padding: "18px 12px",
@@ -222,7 +247,6 @@ export default function Sidebar() {
           overflowX: "hidden",
         }}
       >
-
         <div
           style={{
             padding: "0 10px 10px",
@@ -251,6 +275,7 @@ export default function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
+                className={`sidebar-menu-item ${active ? "active-item" : ""}`}
                 style={{
                   position: "relative",
 
@@ -281,14 +306,10 @@ export default function Sidebar() {
                     ? "0 6px 20px rgba(79,70,229,0.12), inset 0 1px 0 rgba(255,255,255,0.04)"
                     : "none",
 
-                  transition:
-                    "all 0.2s ease",
-
                   fontSize: "13px",
                   fontWeight: active ? 650 : 500,
                 }}
               >
-
                 {/* active indicator */}
                 {active && (
                   <div
@@ -382,79 +403,11 @@ export default function Sidebar() {
                     strokeWidth={2}
                   />
                 )}
-
               </Link>
             );
           })}
         </div>
       </nav>
-
-
-      {/* =====================================================
-          AI STATUS CARD
-      ===================================================== */}
-
-      <div
-        style={{
-          margin: "0 14px 14px",
-          padding: "14px",
-
-          borderRadius: "14px",
-
-          background:
-            "linear-gradient(135deg, rgba(30,64,175,0.18), rgba(91,33,182,0.18))",
-
-          border:
-            "1px solid rgba(99,102,241,0.18)",
-
-          boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,0.03)",
-        }}
-      >
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            marginBottom: "9px",
-          }}
-        >
-
-          <div
-            style={{
-              width: "8px",
-              height: "8px",
-              borderRadius: "50%",
-              background: "#22c55e",
-              boxShadow: "0 0 10px rgba(34,197,94,0.8)",
-            }}
-          />
-
-          <span
-            style={{
-              fontSize: "11px",
-              color: "#86efac",
-              fontWeight: 700,
-            }}
-          >
-            AI SYSTEM ONLINE
-          </span>
-
-        </div>
-
-        <div
-          style={{
-            color: "#e2e8f0",
-            fontSize: "12px",
-            lineHeight: "1.5",
-          }}
-        >
-          Smart insights are ready for your farm.
-        </div>
-
-      </div>
-
 
       {/* =====================================================
           FOOTER
@@ -490,7 +443,6 @@ export default function Sidebar() {
           © Kisan Saathi
         </div>
       </div>
-
     </aside>
   );
 }
