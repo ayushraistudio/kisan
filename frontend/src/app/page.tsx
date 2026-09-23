@@ -155,7 +155,7 @@ export default function Dashboard() {
       
       try {
         response = await axios.post<AnalysisResult>(
-          "https://fiction-wives-basics-voluntary.trycloudflare.com/api/analyze-disease",
+          "https://achievements-installations-derek-johnny.trycloudflare.com",
           formData
         );
       } catch (primaryError) {
