@@ -1,5 +1,7 @@
 // frontend/tailwind.config.ts
+
 import type { Config } from "tailwindcss";
+import scrollbar from "tailwind-scrollbar";
 
 const config: Config = {
   content: [
@@ -7,6 +9,7 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+
   theme: {
     extend: {
       colors: {
@@ -20,12 +23,14 @@ const config: Config = {
         textMain: "#C5C6C7",
         textLight: "#FFFFFF",
       },
+
       fontFamily: {
         sans: ["Inter", "sans-serif"],
       },
     },
   },
-  plugins: [require("tailwind-scrollbar")],
+
+  plugins: [scrollbar],
 };
 
 export default config;
