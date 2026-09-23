@@ -154,14 +154,12 @@ export default function Dashboard() {
       let response;
       
       try {
-        // Step 1: Attempt the deployed Cloudflare URL
         response = await axios.post<AnalysisResult>(
           "https://fiction-wives-basics-voluntary.trycloudflare.com/api/analyze-disease",
           formData
         );
       } catch (primaryError) {
         console.warn("Primary URL failed, falling back to local...", primaryError);
-        // Step 2: Fallback to local URL if deployed URL fails
         response = await axios.post<AnalysisResult>(
           "http://127.0.0.1:8000/api/analyze-disease",
           formData
@@ -169,6 +167,12 @@ export default function Dashboard() {
       }
 
       setAnalysisResult(response.data);
+      
+      // ✅ NAYA CODE: AI Assistant ko global context bhejna
+      window.dispatchEvent(
+        new CustomEvent("update-disease-context", { detail: response.data })
+      );
+
       toast.success(t("disease.analysisComplete", { disease: response.data.prediction }), {
         id: toastId,
       });
@@ -1674,7 +1678,11 @@ export default function Dashboard() {
 
           <button
             type="button"
-            onClick={() => toast.success(`Use the ${t("topbar.talkToSaathi")} button in the topbar.`)}
+            onClick={() => {
+              window.dispatchEvent(
+                new CustomEvent("open-saathi", { detail: analysisResult })
+              );
+            }}
             style={{
               display: "flex",
               alignItems: "center",
