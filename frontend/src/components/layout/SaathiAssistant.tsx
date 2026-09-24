@@ -138,14 +138,28 @@ export default function SaathiAssistant({
         diseaseData: diseaseContext || null, 
       };
 
-      
-      const response = await fetch("http://127.0.0.1:8000/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      let response;
+
+      try {
+        response = await fetch("https://sig-infinite-recruitment-publishing.trycloudflare.com/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Bypass-Tunnel-Reminder": "true"
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) throw new Error("Primary URL failed");
+      } catch (primaryError) {
+        console.warn("Primary URL failed, falling back to local...", primaryError);
+        response = await fetch("http://127.0.0.1:8000/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+      }
 
       if (!response.ok) {
         throw new Error("Failed to fetch response from AI server.");
