@@ -239,7 +239,7 @@ export default function Dashboard() {
 
   return (
     <AppShell>
-      <div
+      <div className="dashboard-page"
         style={{
           display: "flex",
           flexDirection: "column",
@@ -250,7 +250,7 @@ export default function Dashboard() {
             HEADER
             ================================================= */}
 
-        <section
+        <section className="dashboard-header dashboard-reveal dashboard-reveal-1"
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -300,7 +300,7 @@ export default function Dashboard() {
                 letterSpacing: "-0.8px",
               }}
             >
-              Good morning, Farmer 👋
+              {t("dashboard.greeting")}
             </h1>
 
             <p
@@ -310,7 +310,7 @@ export default function Dashboard() {
                 fontSize: "16px",
               }}
             >
-              Here is your farm intelligence for today.
+              {t("dashboard.todayOverview")}
             </p>
           </div>
 
@@ -348,7 +348,7 @@ export default function Dashboard() {
                   fontWeight: 750,
                 }}
               >
-                Farm Status
+                {t("farm.status")}
               </div>
 
               <div
@@ -358,7 +358,7 @@ export default function Dashboard() {
                   marginTop: "4px",
                 }}
               >
-                Monitoring active
+                {t("farm.monitoringActive")}
               </div>
             </div>
           </div>
@@ -369,7 +369,7 @@ export default function Dashboard() {
             ================================================= */}
 
         <section
-          className="glass-card-strong"
+          className="glass-card-strong dashboard-hero dashboard-reveal dashboard-reveal-2"
           style={{
             position: "relative",
             minHeight: "260px",
@@ -435,7 +435,7 @@ export default function Dashboard() {
                 }}
               >
                 <MapPin size={16} />
-                Ghaziabad, Uttar Pradesh
+                {t("farm.defaultLocation")}
               </div>
 
               <h2
@@ -446,7 +446,7 @@ export default function Dashboard() {
                   fontWeight: 800,
                 }}
               >
-                Wheat Field
+                {t("farm.wheatField")}
               </h2>
 
               <p
@@ -456,7 +456,7 @@ export default function Dashboard() {
                   fontSize: "15px",
                 }}
               >
-                Vegetative stage • 15 Nov 2025 sowing
+                {t("farm.vegetativeSowing")}
               </p>
 
               <div
@@ -475,7 +475,7 @@ export default function Dashboard() {
 
                 <StatusPill
                   icon={<CalendarDays size={16} />}
-                  text="Day 129"
+                  text={t("farm.dayCount", { count: 129 })}
                   color="#60a5fa"
                 />
 
@@ -618,7 +618,7 @@ export default function Dashboard() {
             KPI CARDS
             ================================================= */}
 
-        <section
+        <section className="dashboard-kpis dashboard-reveal dashboard-reveal-3"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
@@ -648,7 +648,7 @@ export default function Dashboard() {
             iconColor="#fbbf24"
             title={t("dashboard.temperature")}
             value="26°C"
-            subtitle={t("dashboard.feelsLike", { value: 27 })}
+            subtitle={t("dashboard.apparentTemperature", { value: 27 })}
             trend={t("common.stable")}
           />
 
@@ -666,7 +666,7 @@ export default function Dashboard() {
             INTELLIGENCE CARDS
             ================================================= */}
 
-        <section
+        <section className="dashboard-intelligence dashboard-reveal dashboard-reveal-4"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
@@ -675,7 +675,7 @@ export default function Dashboard() {
         >
           {/* Disease */}
           <div
-            className="glass-card"
+            className="glass-card dashboard-risk-card"
             style={{
               padding: "26px",
               minHeight: "280px",
@@ -818,7 +818,7 @@ export default function Dashboard() {
 
           {/* Crop health */}
           <div
-            className="glass-card"
+            className="glass-card dashboard-chart-card"
             style={{
               padding: "26px",
               minHeight: "280px",
@@ -886,7 +886,7 @@ export default function Dashboard() {
 
           {/* Yield */}
           <div
-            className="glass-card"
+            className="glass-card dashboard-chart-card"
             style={{
               padding: "26px",
               minHeight: "280px",
@@ -972,7 +972,7 @@ export default function Dashboard() {
             FIELD INTELLIGENCE + ACTIONS
             ================================================= */}
 
-        <section
+        <section className="dashboard-field-section dashboard-reveal dashboard-reveal-5"
           style={{
             display: "grid",
             gridTemplateColumns: "minmax(0, 1.4fr) minmax(320px, 0.8fr)",
@@ -981,7 +981,7 @@ export default function Dashboard() {
         >
           {/* FIELD INTELLIGENCE */}
           <div
-            className="glass-card"
+            className="glass-card dashboard-field-card"
             style={{
               padding: "28px",
             }}
@@ -1071,7 +1071,7 @@ export default function Dashboard() {
 
           {/* TODAY ACTIONS */}
           <div
-            className="glass-card"
+            className="glass-card dashboard-actions-card"
             style={{
               padding: "28px",
             }}
@@ -1148,7 +1148,7 @@ export default function Dashboard() {
                 }}
               >
                 <ShieldCheck size={18} />
-                {t("disease.aiCropDiagnostics")}
+                {t("disease.cropDiagnosticsLabel")}
               </div>
 
               <h2
@@ -1159,7 +1159,7 @@ export default function Dashboard() {
                   fontWeight: 800,
                 }}
               >
-                {t("disease.detectInstantly")}
+                {t("disease.instantDetectionTitle")}
               </h2>
 
               <p
@@ -1171,7 +1171,7 @@ export default function Dashboard() {
                   lineHeight: 1.6,
                 }}
               >
-                Upload a clear image of your crop leaf. Kisan Saathi will send it to the AI disease-analysis system and display the detected condition and recommended actions.
+                {t("disease.dashboardUploadDescription")}
               </p>
             </div>
 
@@ -1225,7 +1225,7 @@ export default function Dashboard() {
                   <div style={{ position: "relative" }}>
                     <img
                       src={uploadedImage}
-                      alt="Uploaded crop"
+                      alt={t("disease.uploadedCropAlt")}
                       style={{
                         width: "180px",
                         height: "140px",
@@ -1325,7 +1325,7 @@ export default function Dashboard() {
                       lineHeight: 1.5
                     }}
                   >
-                    {t("disease.dragDropBrowse")}
+                      {t("disease.uploadPrompt")}
                     <br />
                     JPG, JPEG or PNG
                   </p>
@@ -1464,7 +1464,7 @@ export default function Dashboard() {
                         fontSize: "16px",
                       }}
                     >
-                      {t("disease.readyForAnalysis")}
+                      {t("disease.analysisReadyTitle")}
                     </h3>
 
                     <p
@@ -1475,7 +1475,7 @@ export default function Dashboard() {
                         lineHeight: 1.6,
                       }}
                     >
-                      Upload a crop image to receive disease prediction, confidence and recommended actions.
+                      {t("disease.dashboardEmptyDescription")}
                     </p>
                   </div>
 
@@ -1525,7 +1525,7 @@ export default function Dashboard() {
             QUICK ACTIONS
             ================================================= */}
 
-        <section>
+        <section className="dashboard-quick-actions dashboard-reveal dashboard-reveal-7">
           <div style={{ marginBottom: "16px" }}>
             <h2
               style={{
@@ -1556,74 +1556,161 @@ export default function Dashboard() {
               gap: "14px",
             }}
           >
-            {quickActions.map((action) => (
-              <button
-                key={action.title}
-                type="button"
-                onClick={() => router.push(action.route)}
-                className="glass-card"
-                style={{
-                  padding: "20px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "16px",
-                  textAlign: "left",
-                  border: "1px solid rgba(99,102,241,0.15)",
-                  cursor: "pointer",
-                  transition: "transform 0.2s ease, border-color 0.2s ease",
-                }}
-              >
-                <div
-                  style={{
-                    width: "48px",
-                    height: "48px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: "12px",
-                    background: `${action.color}15`,
-                    border: `1px solid ${action.color}25`,
-                    color: action.color,
-                    flexShrink: 0,
-                  }}
-                >
-                  {action.icon}
-                </div>
+            {quickActions.map((action, index) => (
+  <button
+    key={action.title}
+    type="button"
+    onClick={() => router.push(action.route)}
+    className="dashboard-action-card"
+    style={{
+      position: "relative",
+      overflow: "hidden",
+      padding: "20px",
+      display: "flex",
+      alignItems: "center",
+      gap: "16px",
+      textAlign: "left",
+      border: "1px solid rgba(129,140,248,0.18)",
+      background:
+        "linear-gradient(145deg, rgba(30,41,82,0.72), rgba(15,23,48,0.84))",
+      boxShadow:
+        "0 12px 32px rgba(2,6,23,0.28), inset 0 1px 0 rgba(255,255,255,0.04)",
+      cursor: "pointer",
+      transition:
+        "transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease",
+      animationDelay: `${index * 70}ms`,
+      // CSS Fix added below to prevent white background matching issues
+      WebkitAppearance: "none",
+      appearance: "none",
+      outline: "none",
+      backgroundColor: "transparent",
+      color: "inherit",
+      fontFamily: "inherit"
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = "translateY(-4px)";
+      e.currentTarget.style.borderColor = "rgba(129,140,248,0.42)";
+      e.currentTarget.style.boxShadow =
+        "0 18px 42px rgba(2,6,23,0.42), 0 0 28px rgba(99,102,241,0.10), inset 0 1px 0 rgba(255,255,255,0.06)";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = "translateY(0)";
+      e.currentTarget.style.borderColor = "rgba(129,140,248,0.18)";
+      e.currentTarget.style.boxShadow =
+        "0 12px 32px rgba(2,6,23,0.28), inset 0 1px 0 rgba(255,255,255,0.04)";
+    }}
+  >
+    {/* Ambient glow */}
+    <div
+      aria-hidden="true"
+      style={{
+        position: "absolute",
+        top: "-60px",
+        right: "-50px",
+        width: "140px",
+        height: "140px",
+        borderRadius: "50%",
+        background:
+          "radial-gradient(circle, rgba(99,102,241,0.18), transparent 70%)",
+        pointerEvents: "none",
+      }}
+    />
 
-                <div style={{ flex: 1 }}>
-                  <div
-                    style={{
-                      color: "#f1f5f9",
-                      fontSize: "14px",
-                      fontWeight: 750,
-                    }}
-                  >
-                    {action.title}
-                  </div>
+    {/* Accent rail */}
+    <div
+      aria-hidden="true"
+      style={{
+        position: "absolute",
+        left: 0,
+        top: "18px",
+        bottom: "18px",
+        width: "3px",
+        borderRadius: "0 4px 4px 0",
+        background:
+          "linear-gradient(180deg, #60a5fa, #818cf8, #a78bfa)",
+        opacity: 0.9,
+      }}
+    />
 
-                  <div
-                    style={{
-                      marginTop: "6px",
-                      color: "#94a3b8",
-                      fontSize: "12px",
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    {action.description}
-                  </div>
-                </div>
+    {/* Icon */}
+    <div
+      style={{
+        position: "relative",
+        width: "50px",
+        height: "50px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "15px",
+        background:
+          "linear-gradient(145deg, rgba(99,102,241,0.18), rgba(59,130,246,0.08))",
+        border: "1px solid rgba(129,140,248,0.25)",
+        color: action.color,
+        boxShadow:
+          "inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 20px rgba(15,23,42,0.22)",
+        flexShrink: 0,
+      }}
+    >
+      {action.icon}
+    </div>
 
-                <ArrowRight size={20} color="#64748b" />
-              </button>
-            ))}
-          </div>
+    {/* Content */}
+    <div
+      style={{
+        position: "relative",
+        flex: 1,
+        minWidth: 0,
+      }}
+    >
+      <div
+        style={{
+          color: "#f8fafc",
+          fontSize: "14px",
+          fontWeight: 750,
+          letterSpacing: "-0.01em",
+        }}
+      >
+        {action.title}
+      </div>
+
+      <div
+        style={{
+          marginTop: "6px",
+          color: "#94a3b8",
+          fontSize: "12px",
+          lineHeight: 1.5,
+        }}
+      >
+        {action.description}
+      </div>
+    </div>
+
+    {/* Arrow */}
+    <div
+      style={{
+        position: "relative",
+        width: "30px",
+        height: "30px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "10px",
+        background: "rgba(255,255,255,0.035)",
+        border: "1px solid rgba(255,255,255,0.06)",
+        flexShrink: 0,
+      }}
+    >
+      <ArrowRight size={16} color="#818cf8" />
+    </div>
+  </button>
+))}          </div>
         </section>
 
         {/* =================================================
             SAATHI CTA
             ================================================= */}
 
-        <section
+        <section className="dashboard-saathi-cta dashboard-reveal dashboard-reveal-8"
           style={{
             padding: "24px 30px",
             borderRadius: "16px",
@@ -1661,7 +1748,7 @@ export default function Dashboard() {
                   fontWeight: 800,
                 }}
               >
-                {t("saathi.needHelp")}
+                {t("saathi.farmHelpTitle")}
               </div>
 
               <div
@@ -1671,7 +1758,7 @@ export default function Dashboard() {
                   marginTop: "5px",
                 }}
               >
-                {t("saathi.askInLanguage")}
+                {t("saathi.languagePrompt")}
               </div>
             </div>
           </div>
@@ -1962,9 +2049,9 @@ function MetricCard({
   trend: string;
 }) {
   return (
-    <div className="glass-card" style={{ padding: "22px" }}>
+    <div className="glass-card dashboard-metric-card" style={{ padding: "22px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-        <div
+        <div className="dashboard-metric-icon"
           style={{
             width: "44px",
             height: "44px",
@@ -2005,8 +2092,8 @@ function MetricCard({
 
 function CardHeading({ icon, title, subtitle, color }: { icon: React.ReactNode; title: string; subtitle: string; color: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-      <div
+    <div className="dashboard-card-heading" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+      <div className="dashboard-heading-icon"
         style={{
           width: "42px",
           height: "42px",
@@ -2043,7 +2130,7 @@ function FieldIndicator({
   color: string;
 }) {
   return (
-    <div
+    <div className="dashboard-field-indicator"
       style={{
         padding: "16px",
         borderRadius: "12px",
@@ -2082,7 +2169,7 @@ function FieldIndicator({
 
 function ActionItem({ number, title, text, color }: { number: string; title: string; text: string; color: string }) {
   return (
-    <div
+    <div className="dashboard-action-item"
       style={{
         display: "flex",
         gap: "14px",
