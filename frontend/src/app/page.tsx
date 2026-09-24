@@ -155,7 +155,7 @@ export default function Dashboard() {
       
       try {
         response = await axios.post<AnalysisResult>(
-          "[https://sig-infinite-recruitment-publishing.trycloudflare.com/api/analyze-disease](https://sig-infinite-recruitment-publishing.trycloudflare.com/api/analyze-disease)",
+          "https://sig-infinite-recruitment-publishing.trycloudflare.com/api/analyze-disease",
           formData
         );
       } catch (primaryError) {
