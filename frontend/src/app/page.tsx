@@ -155,7 +155,7 @@ export default function Dashboard() {
       
       try {
         response = await axios.post<AnalysisResult>(
-          "https://trends-seminar-vote-subsidiary.trycloudflare.com",
+          " https://sig-infinite-recruitment-publishing.trycloudflare.com",
           formData
         );
       } catch (primaryError) {
