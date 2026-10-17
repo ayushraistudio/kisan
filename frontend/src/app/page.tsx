@@ -150,21 +150,17 @@ export default function Dashboard() {
     formData.append("file", imageFile);
     formData.append("crop", "Wheat");
 
-    try {
-      let response;
-      
-      try {
-        response = await axios.post<AnalysisResult>(
-          "https://sig-infinite-recruitment-publishing.trycloudflare.com/api/analyze-disease",
-          formData
-        );
-      } catch (primaryError) {
-        console.warn("Primary URL failed, falling back to local...", primaryError);
-        response = await axios.post<AnalysisResult>(
-          "http://127.0.0.1:8000/api/analyze-disease",
-          formData
-        );
-      }
+   try {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+  if (!API_URL) {
+    throw new Error("Backend API URL is not configured.");
+  }
+
+  const response = await axios.post<AnalysisResult>(
+    `${API_URL}/api/analyze-disease`,
+    formData
+  );
 
       setAnalysisResult(response.data);
       
