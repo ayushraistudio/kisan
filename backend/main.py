@@ -1,8 +1,6 @@
 import os
 import io
 import json
-import base64
-import random
 import requests
 import numpy as np
 from PIL import Image
@@ -48,7 +46,7 @@ class ChatRequest(BaseModel):
 
 
 # ==========================================
-# HYBRID ARCHITECTURE: DISEASE MODEL INTERFACE
+# DISEASE MODEL INTERFACE
 # ==========================================
 
 class DiseaseModelInterface(ABC):
@@ -75,7 +73,7 @@ class CustomKerasModel(DiseaseModelInterface):
                 self.is_trained_and_loaded = True
                 print("Success: Custom AI model loaded perfectly.")
             else:
-                print("Info: Custom model files not found. System will use fallback engine.")
+                print("Warning: Custom model files not found.")
         except Exception as e:
             print(f"Warning: Failed to load custom model. Exception: {str(e)}")
 
@@ -114,62 +112,14 @@ class CustomKerasModel(DiseaseModelInterface):
             return {"status": "failed", "reason": f"Prediction error: {str(e)}"}
 
 
-
-    async def predict(self, image_bytes: bytes, crop_type: str) -> dict:
-        try:
-            image_b64 = base64.b64encode(image_bytes).decode("ascii")
-            response = requests.post(
-                f"{self.api_url}?api_key={self.api_key}",
-                data=image_b64,
-                headers={"Content-Type": "application/x-www-form-urlencoded"}
-            )
-            
-            if response.status_code == 200:
-                data = response.json()
-                predictions = data.get("predictions", [])
-                if predictions:
-                    top_pred = predictions[0]
-                    return {
-                        "status": "success",
-                        "prediction": top_pred.get("class", "Healthy"),
-                        "confidence": round(top_pred.get("confidence", 0) * 100, 1),
-                        "source": "Roboflow_Cloud_API"
-                    }
-            return {"status": "failed", "reason": "No predictions found or API limit reached."}
-        except Exception as e:
-            return {"status": "failed", "reason": str(e)}
-
-
 class HybridModelManager:
-    """Orchestrator that routes requests based on the hybrid fallback strategy."""
+    """Runs disease predictions using only the custom-trained TensorFlow model."""
+
     def __init__(self):
         self.primary_model = CustomKerasModel()
-        self.fallback_model = RoboflowAPIModel()
 
     async def get_prediction(self, image_bytes: bytes, crop_type: str) -> dict:
-        # Step 1: Attempt prediction with the custom trained model
-        result = await self.primary_model.predict(image_bytes, crop_type)
-        
-        # Step 2: Fallback to Roboflow if custom model fails or has low confidence (< 60%)
-        if result.get("status") == "failed" or result.get("confidence", 0) < 60.0:
-            print("Warning: Primary model unavailable or low confidence. Routing to Roboflow API...")
-            fallback_result = await self.fallback_model.predict(image_bytes, crop_type)
-            
-            if fallback_result.get("status") == "success":
-                return fallback_result
-                
-        # Step 3: Ultimate Fail-Safe (Ensures the hackathon demo never breaks during presentation)
-        if result.get("status") == "failed":
-            print("Warning: Both models failed. Executing Fail-Safe Mock Engine.")
-            disease_classes = ["Leaf Rust", "Powdery Mildew", "Septoria", "Yellow Rust"]
-            return {
-                "status": "success",
-                "prediction": random.choices(disease_classes, weights=[0.4, 0.3, 0.2, 0.1])[0],
-                "confidence": round(random.uniform(85.0, 96.5), 1),
-                "source": "Fail_Safe_Mock_Engine"
-            }
-            
-        return result
+        return await self.primary_model.predict(image_bytes, crop_type)
 
 
 # ==========================================
@@ -202,12 +152,18 @@ def get_weather(lat: float = 28.66, lon: float = 77.45):
 async def analyze_disease(file: UploadFile = File(...), crop: str = Form("Wheat")):
     image_bytes = await file.read()
     
-    # Process image through the Hybrid Interface
+    # Process image through the custom TensorFlow model
     prediction_data = await ai_manager.get_prediction(image_bytes, crop)
     
-    predicted_disease = prediction_data.get("prediction", "Healthy")
-    confidence_score = prediction_data.get("confidence", 99.0)
-    source = prediction_data.get("source", "Unknown")
+    if prediction_data.get("status") != "success":
+        raise HTTPException(
+            status_code=503,
+            detail=prediction_data.get("reason", "Disease prediction is currently unavailable."),
+        )
+
+    predicted_disease = prediction_data["prediction"]
+    confidence_score = prediction_data["confidence"]
+    source = prediction_data.get("source", "Custom_Local_Model")
     
     risk_level = "High Risk" if predicted_disease != "Healthy" else "Low Risk"
     
