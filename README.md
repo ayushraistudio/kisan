@@ -1,239 +1,261 @@
-# Kisan Saathi
+# 🌾 Kisan Saathi
 
-## Project Overview
+**AI-powered crop health analysis and farming assistance for Indian farmers.**
 
-Kisan Saathi is a farming dashboard for crop-health analysis and farm guidance. The Next.js frontend provides dashboard pages for farm information, disease detection, crop advisory, weather, market prices, farming knowledge, expert contact, alerts, and settings. The FastAPI backend exposes weather, image disease analysis, and AI chat endpoints.
+Kisan Saathi is a web-based farming dashboard that brings crop disease analysis, weather information, crop guidance, market-price views, farming knowledge, and an AI agriculture assistant into one interface.
 
-Disease analysis uses a local TensorFlow/Keras model when available, then attempts a Roboflow API fallback and finally a mock fallback if both prediction paths fail. The assistant uses the Groq OpenAI-compatible API.
+**Live Demo:** https://kisan-saaathi.vercel.app/
 
-## Problem Statement
+---
 
-Farmers need accessible information for crop health, disease symptoms, irrigation, weather, market context, and routine field decisions. This project brings those workflows into one web interface and adds image-based crop disease analysis and a multilingual AI assistant.
+## ✨ Features
 
-## Key Features
+- **Crop Disease Detection** — Upload a crop-leaf image to receive a predicted label, confidence score, risk level, and suggested next steps.
+- **Saathi AI Assistant** — Ask farming questions with language-aware responses.
+- **Weather Information** — Retrieve weather data through Open-Meteo.
+- **Crop Advisory** — Browse guidance for Wheat, Rice, Maize, and Potato.
+- **Market Prices** — Explore crop market-price charts.
+- **Knowledge Hub** — Search farming knowledge articles.
+- **Expert Connect** — Browse the expert directory and available contact interactions.
+- **Alerts and Settings** — Review alerts and manage available profile preferences.
+- **Responsive Dashboard** — Navigate through the sidebar and top bar.
 
-- Dashboard with farm-health, weather, yield, and crop-health views.
-- Upload one crop image for disease analysis.
-- Local Keras disease prediction with Roboflow and mock fallbacks.
-- Crop advisory content for Wheat, Rice, Maize, and Potato.
-- Static weather and five-day forecast view.
-- Static crop market-price charts for nearby markets.
-- Searchable farming knowledge articles.
-- Searchable expert directory with local request modals.
-- Local alert filtering, read-state, and clear-read interactions.
-- Farmer profile and preference settings stored in page state.
-- English, Hindi, and Gujarati i18n data; the settings screen also displays additional language choices.
-- Saathi chat with text input, browser speech recognition where supported, and disease context.
+> **Note:** Some dashboard sections currently use frontend-defined or static sample data rather than live services. See [Current Limitations](#-current-limitations).
 
-## Technology Stack
+## 🧰 Technology Stack
 
 ### Frontend
-
-- Next.js 16.3.6 with the App Router.
-- React 19.2.8 and TypeScript.
-- Tailwind CSS 4, PostCSS, and CSS/in-line styling.
-- Axios, React Dropzone, Recharts, Zustand, i18next/react-i18next, react-hot-toast, and lucide-react.
+- Next.js with the App Router
+- React and TypeScript
+- Tailwind CSS
+- Axios, React Dropzone, Recharts, Zustand
+- i18next / react-i18next, lucide-react, react-hot-toast
 
 ### Backend
+- Python, FastAPI, Uvicorn, Pydantic
+- TensorFlow / Keras
+- NumPy and Pillow for image processing
+- Requests for external HTTP calls
+- OpenAI-compatible Python client for Groq
 
-- Python FastAPI application served by Uvicorn.
-- Pydantic request validation.
-- Requests for external HTTP calls.
-- Pillow and NumPy for image preparation.
+### External Services
+- **Open-Meteo** — Weather data
+- **Groq API** — AI chat responses
 
-### Database
-
-No database is used or configured in the project files.
-
-### Machine Learning / AI
-
-- TensorFlow/Keras loads `backend/custom_disease_model.h5` for local inference.
-- The training script uses ImageNet MobileNetV2 with a custom classification head.
-- OpenAI-compatible client configuration calls Groq for chat.
-- Roboflow is configured as a cloud disease-prediction fallback.
-
-### APIs / External Services
-
-- Open-Meteo forecast API.
-- Roboflow detection API.
-- Groq OpenAI-compatible chat API.
-
-### Deployment / Hosting
-
-No deployment or hosting configuration is specified in the project files. The frontend currently contains a Cloudflare tunnel URL as a primary disease-analysis URL and a local backend fallback.
-
-## System Architecture
+## 🏗️ Architecture
 
 ```text
 User
-  -> Next.js frontend
-  -> FastAPI endpoint
-  -> local Keras model
-       -> Roboflow fallback when local inference fails or confidence is below 60%
-       -> mock fallback when both prediction paths fail
-  -> JSON prediction/result
-  -> frontend display
+  │
+  ▼
+Next.js + React frontend
+  ├── Weather requests ─────► FastAPI ─────► Open-Meteo
+  ├── Crop image upload ────► FastAPI ─────► TensorFlow/Keras model
+  └── Assistant messages ───► FastAPI ─────► Groq API
+  │
+  ▼
+Results displayed in the dashboard
 ```
 
-The chat path sends a message, language, and optional disease context from the frontend to FastAPI, which calls Groq and returns the assistant reply. Weather is fetched by the backend from Open-Meteo. No database participates in either flow.
-
-## Project Structure
+## 📁 Project Structure
 
 ```text
 ai-krishi-advisor/
+├── LICENSE
 ├── README.md
-├── PROJECT_GUIDE.md
 ├── backend/
 │   ├── main.py
 │   ├── train_model.py
+│   ├── requirements.txt
 │   ├── class_labels.json
 │   ├── custom_disease_model.h5
-│   ├── dataset/
-│   │   ├── Early_Blight/       # 1,000 image files
-│   │   ├── Healthy/            # 1,591 image files
-│   │   └── Late_Blight/        # 1,909 image files
-│   ├── venv/                   # local virtual-environment directory
-│   └── __pycache__/            # generated Python cache
+│   └── dataset/
+│       ├── Early_Blight/
+│       ├── Healthy/
+│       └── Late_Blight/
 └── frontend/
     ├── package.json
     ├── package-lock.json
-    ├── next.config.ts
-    ├── tsconfig.json
-    ├── eslint.config.mjs
-    ├── postcss.config.mjs
-    ├── tailwind.config.ts
-    ├── next-env.d.ts
-    ├── AGENTS.md
-    ├── CLAUDE.md
-    ├── public/
-    │   ├── file.svg
-    │   ├── globe.svg
-    │   ├── next.svg
-    │   ├── vercel.svg
-    │   └── window.svg
     └── src/
         ├── app/
-        │   ├── layout.tsx
         │   ├── page.tsx
-        │   ├── globals.css
-        │   ├── favicon.ico
-        │   ├── alerts/page.tsx
-        │   ├── crop-advisory/page.tsx
-        │   ├── disease-detection/page.tsx
-        │   ├── expert-connect/page.tsx
-        │   ├── knowledge-hub/page.tsx
-        │   ├── market-prices/page.tsx
-        │   ├── my-farm/page.tsx
-        │   ├── settings/page.tsx
-        │   └── weather/page.tsx
-        ├── components/layout/
-        │   ├── AppShell.tsx
-        │   ├── SaathiAssistant.tsx
-        │   ├── Sidebar.tsx
-        │   └── Topbar.tsx
-        └── i18n/config.ts
+        │   ├── disease-detection/
+        │   ├── my-farm/
+        │   ├── crop-advisory/
+        │   ├── weather/
+        │   ├── market-prices/
+        │   ├── knowledge-hub/
+        │   ├── expert-connect/
+        │   ├── alerts/
+        │   └── settings/
+        ├── components/
+        └── i18n/
 ```
 
-The frontend also contains generated/dependency directories such as `.next/` and `node_modules/` in the current workspace.
+Generated directories such as `node_modules/`, `.next/`, and Python virtual environments should not be committed.
 
-## Frontend
+## 🚀 Getting Started
 
-`src/app/layout.tsx` defines the client root layout and toast provider. `AppShell.tsx` composes the fixed sidebar, top bar, and page content area. `Sidebar.tsx` defines navigation routes, while `Topbar.tsx` handles search, notifications, language selection, profile UI, and opening Saathi. `SaathiAssistant.tsx` sends chat requests and optionally uses browser speech recognition.
+### Prerequisites
+- Node.js and npm
+- Python version compatible with `backend/requirements.txt`
+- A Groq API key
+- The trained model and class-label files for local disease inference
 
-The route pages are client components. `page.tsx` and `disease-detection/page.tsx` upload images and call the disease endpoint. The weather, market, advisory, knowledge, expert, alerts, and settings pages currently use data or state defined in the frontend files. Recharts is used for dashboard and market visualizations, and React Dropzone handles image selection.
+### 1. Clone the repository
 
-## Backend
+```bash
+git clone https://github.com/ayushraistudio/kisan.git
+cd kisan
+```
 
-`backend/main.py` creates the FastAPI application and initializes `HybridModelManager` at import time. The manager loads the local Keras model and label map through `CustomKerasModel`, then keeps `RoboflowAPIModel` as a fallback. The application enables permissive CORS for all origins, methods, headers, and credentials.
+### 2. Set up the backend
 
-`train_model.py` trains and saves the local model and class-label mapping. Model and label paths are relative to the process working directory, so backend commands should be run from `backend/`.
+```bash
+cd backend
+python -m venv venv
+```
 
-## API Endpoints
+Activate the environment:
 
-| Method | Endpoint | Purpose | Input | Output |
-|---|---|---|---|---|
-| GET | `/api/weather` | Fetch current weather from Open-Meteo | Optional query parameters `lat` and `lon`; defaults are `28.66` and `77.45` | Open-Meteo JSON, or `{ "error": ... }` |
-| POST | `/api/analyze-disease` | Analyze an uploaded crop image | Multipart `file`; optional form field `crop`, default `Wheat` | Filename, crop, prediction, confidence, risk level, actions, and source |
-| POST | `/api/chat` | Ask the Saathi agriculture assistant | JSON: `message`, `language`, optional `diseaseData` | `{ "reply": "..." }` |
+**Windows PowerShell**
+```powershell
+.\venv\Scripts\Activate.ps1
+```
 
-## Machine Learning
+**macOS / Linux**
+```bash
+source venv/bin/activate
+```
 
-The checked-in dataset has 4,500 image files in three classes: Early Blight, Healthy, and Late Blight. Training resizes images to 224x224, rescales pixels to `[0, 1]`, and applies rotation, horizontal/vertical shifts, and horizontal flips. A 20% validation subset is configured; a separate test split is not specified.
+Install dependencies:
 
-The model is a frozen ImageNet-weighted MobileNetV2 feature extractor with global average pooling, a 128-unit ReLU dense layer, 0.5 dropout, and a softmax output layer sized to the discovered classes. It is compiled with Adam at learning rate `0.001`, categorical cross-entropy, and accuracy. Training allows up to 10 epochs with best-validation-accuracy checkpointing and early stopping. A measured accuracy value and training hardware are not specified in the project files.
+```bash
+pip install -r requirements.txt
+```
 
-## Dataset
+Create `backend/.env`:
 
-The dataset directory is `backend/dataset/` and is organized in the class-folder format expected by `flow_from_directory`. Verified counts are:
+```env
+GROQ_API_KEY=your_groq_api_key
+```
 
-| Class | Image files |
-|---|---:|
-| Early_Blight | 1,000 |
-| Healthy | 1,591 |
-| Late_Blight | 1,909 |
-| **Total** | **4,500** |
+Start the API from the `backend/` directory:
 
-The dataset’s external name, provenance, original image dimensions, and license are not specified in the project files.
+```bash
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
 
-## Installation
+The local API will be available at `http://localhost:8000`.
 
-### Frontend
+### 3. Set up the frontend
+
+Open a second terminal:
 
 ```bash
 cd frontend
 npm install
 ```
 
-### Backend
+Create `frontend/.env.local`:
 
-No `requirements.txt` is present. From `backend/`, use a Python environment with the imported backend packages installed. A project-local environment directory named `venv` is present, but its package contents are not documented here.
-
-```bash
-cd backend
-python -m venv venv
-venv\Scripts\activate
-pip install fastapi uvicorn python-multipart requests numpy pillow openai tensorflow
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-## Running the Project
+Ensure the frontend uses this variable for backend requests. Restart Next.js after changing environment variables.
 
-Start the backend from `backend/`:
-
-```bash
-uvicorn main:app --reload
-```
-
-The backend listens on `0.0.0.0:8000` when started through `main.py`. Start the frontend in a second terminal:
+Run the frontend:
 
 ```bash
-cd frontend
 npm run dev
 ```
 
-The Next.js development server normally uses port 3000. To retrain the model, run this from `backend/` after the dataset and ML dependencies are available:
+Open `http://localhost:3000`.
 
-```bash
-python train_model.py
+## 🔌 API Endpoints
+
+| Method | Endpoint | Purpose | Request |
+|---|---|---|---|
+| `GET` | `/api/weather` | Fetch weather information | Optional `lat` and `lon` query parameters |
+| `POST` | `/api/analyze-disease` | Analyze a crop image | Multipart fields: `file`, optional `crop` |
+| `POST` | `/api/chat` | Get an AI assistant response | JSON with `message`, `language`, optional `diseaseData` |
+
+### Example chat request
+
+```json
+{
+  "message": "Meri fasal ke patton par daag hain, kya karun?",
+  "language": "Hinglish",
+  "diseaseData": null
+}
 ```
 
-## Environment Variables
+A successful chat response uses this shape:
 
-No application environment variables are read by the project. The Groq credential is currently hardcoded in `backend/main.py`; its value is intentionally not reproduced here. The Roboflow integration contains a placeholder API key in source. These should be treated as deployment limitations and replaced with secure configuration before use.
+```json
+{
+  "reply": "..."
+}
+```
 
-## Usage
+Refer to `backend/main.py` for the exact request validation and response fields.
 
-1. Start the FastAPI backend and Next.js frontend.
-2. Open the frontend dashboard.
-3. Use Disease Detection or the dashboard upload area to select one JPG, JPEG, or PNG image and submit it for analysis.
-4. Review the predicted label, confidence, risk level, recommended actions, and prediction source.
-5. Use the sidebar to browse farm, advisory, weather, market, knowledge, expert, alerts, and settings pages.
-6. Open Saathi from the top bar, choose a language, and send a text or supported voice question.
+## 🧠 Machine Learning
 
-## Important Notes
+The project includes a TensorFlow/Keras image-classification model and a class-label mapping file. The training script uses a MobileNetV2-based model with a custom classification head. Images are resized to `224 × 224` and pixel values are normalized to `[0, 1]`.
 
-- The local model, labels, dataset, and TensorFlow runtime are required for local inference.
-- Local inference falls back to Roboflow when it fails or returns confidence below 60%; a random mock result can be returned if both paths fail.
-- The frontend contains a hardcoded Cloudflare tunnel URL for dashboard disease analysis and a local URL fallback. The dedicated disease page uses the local URL directly.
-- Weather, market prices, forecast, advisory content, alerts, experts, and knowledge articles are not all backed by live APIs in the current frontend code.
-- No database, authentication flow, deployment configuration, automated tests, or backend dependency lockfile is specified in the project files.
-- Do not use the committed API credential in production; rotate it and move credentials to secure environment configuration.
+The dataset contains **4,500 images** across three classes:
+
+| Class | Image count |
+|---|---:|
+| Early Blight | 1,000 |
+| Healthy | 1,591 |
+| Late Blight | 1,909 |
+| **Total** | **4,500** |
+
+Dataset size alone does not establish real-world accuracy. Evaluate the model on a separate, representative test set before relying on predictions in the field.
+
+## 🔐 Configuration and Security
+
+- Keep `GROQ_API_KEY` in the backend environment; never commit it to source control.
+- Set `NEXT_PUBLIC_API_URL` to the correct backend base URL for each environment.
+- Configure CORS for only the frontend origins you intend to support.
+- CORS controls browser cross-origin access; it is not API authentication. Add server-side authentication and rate limiting if access restrictions are required.
+- Do not commit `.env` files, build outputs, virtual environments, or private credentials.
+- Rotate any API credential that has previously been exposed.
+
+## ⚠️ Current Limitations
+
+- Disease predictions depend on the availability and suitability of the local model and label mapping.
+- AI chat requires a valid Groq API key and network access.
+- Some market-price, advisory, alert, expert, and knowledge content may be static or frontend-managed rather than live.
+- A configured database and a dedicated automated test suite are not documented in the current project.
+- Predictions are informational. Confirm consequential crop-treatment decisions with a qualified agricultural expert.
+
+## 🛣️ Possible Improvements
+
+- Connect market prices and additional agricultural data to reliable live APIs.
+- Add automated tests for frontend flows and backend endpoints.
+- Evaluate disease-model performance using a separate test dataset and report class-wise metrics.
+- Add authentication, rate limiting, structured logging, and monitoring where appropriate.
+- Improve accessibility and test mobile and desktop layouts.
+
+## 🤝 Contributing
+
+Contributions, bug reports, and feature suggestions are welcome.
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Make and test your changes.
+4. Open a pull request with a clear description.
+
+## 📄 License
+
+This project is distributed under the MIT License. See [`LICENSE`](LICENSE) for details.
+
+---
+
+<p align="center">
+  Built to make practical farming guidance more accessible.
+</p>
