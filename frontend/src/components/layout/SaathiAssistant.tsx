@@ -125,68 +125,59 @@ export default function SaathiAssistant({
   /* =======================================================
      API INTEGRATION (Send Data to Backend)
      ======================================================= */
+  
+     async function fetchAiResponse(userMessage: string) {
+  setIsLoading(true);
+  setUiError(null);
 
-  async function fetchAiResponse(userMessage: string) {
-    setIsLoading(true);
-    setUiError(null);
+  try {
+    const payload = {
+      message: userMessage,
+      language: currentLanguage,
+      diseaseData: diseaseContext || null,
+    };
 
-    try {
-      // Backend ko context aur data bheja ja raha hai
-      const payload = {
-        message: userMessage,
-        language: currentLanguage,
-        diseaseData: diseaseContext || null, 
-      };
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-      let response;
-
-      try {
-        response = await fetch("https://sig-infinite-recruitment-publishing.trycloudflare.com/api/chat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Bypass-Tunnel-Reminder": "true"
-          },
-          body: JSON.stringify(payload),
-        });
-        if (!response.ok) throw new Error("Primary URL failed");
-      } catch (primaryError) {
-        console.warn("Primary URL failed, falling back to local...", primaryError);
-        response = await fetch("http://127.0.0.1:8000/api/chat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
-      }
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch response from AI server.");
-      }
-
-      const data = await response.json();
-      
-      setChatMessages((current) => [
-        ...current,
-        {
-          sender: "saathi",
-          text: data.reply || "I am currently unable to answer. Please try again later.",
-        },
-      ]);
-    } catch (error: any) {
-      console.error("AI Assistant Error:", error);
-      setChatMessages((current) => [
-        ...current,
-        {
-          sender: "saathi",
-          text: "I am experiencing network issues right now. Please check your connection and try again.",
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
+    if (!API_URL) {
+      throw new Error("Backend API URL is not configured.");
     }
+
+    const response = await fetch(`${API_URL}/api/chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error(`AI API failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    setChatMessages((current) => [
+      ...current,
+      {
+        sender: "saathi",
+        text: data.reply || "I am currently unable to answer. Please try again later.",
+      },
+    ]);
+  } catch (error: any) {
+    console.error("AI Assistant Error:", error);
+
+    setChatMessages((current) => [
+      ...current,
+      {
+        sender: "saathi",
+        text: "I am experiencing network issues right now. Please check your connection and try again.",
+      },
+    ]);
+  } finally {
+    setIsLoading(false);
   }
+}
 
   /* =======================================================
      MESSAGE HANDLING
