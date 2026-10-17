@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+openai
+tensorflow==2.19.0
+numpy>=1.26,<2.2
+Pillow
+requests
+python-multipart
